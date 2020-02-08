@@ -2,23 +2,33 @@ package com.example.spotifytest;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
+import com.spotify.android.appremote.api.ContentApi;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
+
+
+
 import com.spotify.protocol.types.Track;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String CLIENT_ID = "d28a6b2240514ac1a918765697a631a1";
+    private static final String CLIENT_ID = "<ClientID -- A mettre >"; //TODO mettre client id ici
     private static final String REDIRECT_URI = "http://com.example.spotifytest/callback";
     private SpotifyAppRemote mSpotifyAppRemote;
+    private Boolean isConected = false;
+
+    private TextView txtText = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        txtText = findViewById(R.id.txt_test);
     }
 
     @Override
@@ -53,13 +63,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if (isConected)
+            mSpotifyAppRemote.getPlayerApi().pause();
+        isConected = false;
         SpotifyAppRemote.disconnect(mSpotifyAppRemote);
     }
 
     private void connected() {
-        // Play a playlist
-        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
+        isConected = true;
 
+        // Play a playlist
+        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DWZd79rJ6a7lp");
         // Subscribe to PlayerState
         mSpotifyAppRemote.getPlayerApi()
                 .subscribeToPlayerState()
